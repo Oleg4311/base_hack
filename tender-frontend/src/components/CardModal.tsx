@@ -37,7 +37,7 @@ const CardModal: React.FC<CardModalProps> = ({
 
   const handleSaveChanges = () => {
     if (onUpdate) {
-      onUpdate(editedCard);
+      onUpdate(editedCard); // Передаем обновленную карточку напрямую
     }
     setIsEditing(false);
   };
@@ -105,13 +105,11 @@ const CardModal: React.FC<CardModalProps> = ({
         )}
       </DialogContent>
       <DialogActions>
-        {/* Показываем кнопку "Сохранить в БД" только для карточек без id */}
         {!card.id && (
           <Button color="primary" onClick={handleSaveToDatabase}>
             Сохранить в БД
           </Button>
         )}
-        {/* Показываем кнопки редактирования только для карточек с id */}
         {card.id && (
           <>
             {isEditing ? (

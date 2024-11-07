@@ -57,11 +57,12 @@ export const addCard = createAsyncThunk(
   }
 );
 
+// Обновление карточки
 export const updateCard = createAsyncThunk(
   "cards/updateCard",
-  async ({ id, card }: { id: number; card: ICard }) => {
+  async (card: ICard) => {
     const response = await axios.put(
-      `http://localhost:3001/images/${id}`,
+      `http://localhost:3001/images/${card.id}`,
       card
     );
     return response.data;

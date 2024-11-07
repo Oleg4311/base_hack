@@ -36,7 +36,7 @@ const CardForm: React.FC<CardFormProps> = ({ initialCard, onClose }) => {
 
     if (initialCard && initialCard.id) {
       // Обновление существующей карточки
-      dispatch(updateCard({ id: initialCard.id, card: cardData }));
+      dispatch(updateCard(cardData));
     } else {
       // Добавление новой карточки
       dispatch(addCard(cardData));

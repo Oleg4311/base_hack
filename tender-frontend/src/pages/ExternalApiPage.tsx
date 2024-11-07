@@ -57,7 +57,7 @@ const ExternalApiPage: React.FC = () => {
   const handleSaveToDatabase = (card: ICard) => {
     if (card.id) {
       // Если у карточки есть ID, значит, она уже есть в базе и нужно выполнить обновление
-      dispatch(updateCard({ id: card.id, card }));
+      dispatch(updateCard(card));
     } else {
       // Если ID нет, значит, карточка новая и нужно выполнить добавление
       dispatch(addCard(card));
