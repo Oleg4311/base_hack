@@ -15,7 +15,7 @@ const CardForm: React.FC<CardFormProps> = ({ initialCard, onClose }) => {
   const [description, setDescription] = useState(
     initialCard?.description || ""
   );
-  const [imageUrl, setImageUrl] = useState(initialCard?.imageUrl || "");
+  const [url, seturl] = useState(initialCard?.url || "");
   const [author, setAuthor] = useState(initialCard?.author || "");
   const [width, setWidth] = useState(initialCard?.width || 0);
   const [height, setHeight] = useState(initialCard?.height || 0);
@@ -26,8 +26,8 @@ const CardForm: React.FC<CardFormProps> = ({ initialCard, onClose }) => {
       id: initialCard?.id,
       title,
       description,
-      imageUrl,
-      downloadUrl: imageUrl,
+      url,
+      downloadUrl: url,
       author,
       width,
       height,
@@ -75,8 +75,8 @@ const CardForm: React.FC<CardFormProps> = ({ initialCard, onClose }) => {
       />
       <TextField
         label="Image URL"
-        value={imageUrl}
-        onChange={(e) => setImageUrl(e.target.value)}
+        value={url}
+        onChange={(e) => seturl(e.target.value)}
         fullWidth
       />
       <TextField

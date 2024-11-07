@@ -1,5 +1,3 @@
-// src/components/CardModal.tsx
-
 import React, { useState } from "react";
 import {
   Dialog,
@@ -17,6 +15,7 @@ interface CardModalProps {
   onClose: () => void;
   onSaveToDatabase?: (card: ICard) => void;
   onDelete?: () => void;
+  onUpdate?: (card: ICard) => void;
 }
 
 const CardModal: React.FC<CardModalProps> = ({
@@ -24,18 +23,24 @@ const CardModal: React.FC<CardModalProps> = ({
   onClose,
   onSaveToDatabase,
   onDelete,
+  onUpdate,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedCard, setEditedCard] = useState<ICard>({ ...card });
 
-  const handleSave = () => {
+  const handleSaveToDatabase = () => {
     if (onSaveToDatabase) {
       onSaveToDatabase(editedCard);
     }
     onClose();
   };
 
-  const toggleEditMode = () => setIsEditing((prev) => !prev);
+  const handleSaveChanges = () => {
+    if (onUpdate) {
+      onUpdate(editedCard);
+    }
+    setIsEditing(false);
+  };
 
   return (
     <Dialog open onClose={onClose} maxWidth="sm" fullWidth>
@@ -70,9 +75,9 @@ const CardModal: React.FC<CardModalProps> = ({
               label="URL изображения"
               fullWidth
               margin="normal"
-              value={editedCard.imageUrl}
+              value={editedCard.url}
               onChange={(e) =>
-                setEditedCard({ ...editedCard, imageUrl: e.target.value })
+                setEditedCard({ ...editedCard, url: e.target.value })
               }
             />
           </>
@@ -90,7 +95,7 @@ const CardModal: React.FC<CardModalProps> = ({
             <img
               src={
                 card.downloadUrl ||
-                card.imageUrl ||
+                card.url ||
                 "https://via.placeholder.com/150"
               }
               alt={card.author || "No image"}
@@ -100,12 +105,26 @@ const CardModal: React.FC<CardModalProps> = ({
         )}
       </DialogContent>
       <DialogActions>
-        <Button color="primary" onClick={handleSave}>
-          Сохранить в БД
-        </Button>
-        <Button color="secondary" onClick={toggleEditMode}>
-          {isEditing ? "Сохранить изменения" : "Редактировать"}
-        </Button>
+        {/* Показываем кнопку "Сохранить в БД" только для карточек без id */}
+        {!card.id && (
+          <Button color="primary" onClick={handleSaveToDatabase}>
+            Сохранить в БД
+          </Button>
+        )}
+        {/* Показываем кнопки редактирования только для карточек с id */}
+        {card.id && (
+          <>
+            {isEditing ? (
+              <Button color="primary" onClick={handleSaveChanges}>
+                Сохранить изменения
+              </Button>
+            ) : (
+              <Button color="secondary" onClick={() => setIsEditing(true)}>
+                Редактировать
+              </Button>
+            )}
+          </>
+        )}
         {onDelete && (
           <Button color="error" onClick={onDelete}>
             Удалить

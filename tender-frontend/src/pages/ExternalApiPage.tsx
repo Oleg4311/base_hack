@@ -80,7 +80,7 @@ const ExternalApiPage: React.FC = () => {
           id: undefined,
           title: "",
           description: "",
-          imageUrl: card.download_url,
+          url: card.download_url,
           downloadUrl: card.download_url,
           author: card.author,
           width: card.width,

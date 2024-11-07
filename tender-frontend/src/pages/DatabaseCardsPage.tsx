@@ -65,7 +65,7 @@ const DatabaseCardsPage: React.FC = () => {
               <CardMedia
                 component="img"
                 height="140"
-                image={card.imageUrl || "https://via.placeholder.com/150"}
+                image={card.url || "https://via.placeholder.com/150"}
                 alt={card.author || "Unknown"}
               />
               <CardContent>

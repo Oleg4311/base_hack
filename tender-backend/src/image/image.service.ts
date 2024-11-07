@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { Image } from './image.entity';
 import { HttpService } from '@nestjs/axios';
 
-@Injectable()   121
+@Injectable()
 export class ImageService {
   constructor(
     @InjectRepository(Image)

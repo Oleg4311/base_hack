@@ -5,7 +5,7 @@ export interface ICard {
   id?: number;
   title: string;
   description: string;
-  imageUrl: string;
+  url: string;
   downloadUrl?: string;
   author?: string;
   width?: number;
