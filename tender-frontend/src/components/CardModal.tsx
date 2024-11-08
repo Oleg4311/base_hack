@@ -38,19 +38,45 @@ const CardModal: React.FC<CardModalProps> = ({
 
   const handleSaveChanges = async () => {
     if (!editedCard.id && onSaveToDatabase) {
-      // Если у карточки нет id, сначала сохраняем её в БД
       const savedCard = await onSaveToDatabase(editedCard);
-      setEditedCard(savedCard); // Обновляем состояние с полученным id
+      setEditedCard(savedCard);
       if (onUpdate) {
-        const updatedCard = await onUpdate(savedCard); // Затем обновляем карточку с id
+        const updatedCard = await onUpdate(savedCard);
         setEditedCard(updatedCard);
       }
     } else if (onUpdate) {
-      // Если у карточки уже есть id, сразу выполняем обновление
       const updatedCard = await onUpdate(editedCard);
       setEditedCard(updatedCard);
     }
     setIsEditing(false);
+  };
+
+  const handleFieldChange = (key: string, value: string) => {
+    setEditedCard((prevCard) => ({
+      ...prevCard,
+      [key]: isNaN(Number(value)) ? value : Number(value), // Учитываем числовые значения
+    }));
+  };
+
+  const renderCardFields = () => {
+    return Object.entries(editedCard).map(([key, value]) => {
+      if (key === "id" || key === "createdAt") return null; // Исключаем неизменяемые поля
+
+      return isEditing ? (
+        <TextField
+          key={key}
+          label={key}
+          fullWidth
+          margin="normal"
+          value={value || ""}
+          onChange={(e) => handleFieldChange(key, e.target.value)}
+        />
+      ) : (
+        <Typography key={key} variant="body1">
+          <strong>{key}:</strong> {value || "N/A"}
+        </Typography>
+      );
+    });
   };
 
   return (
@@ -58,63 +84,9 @@ const CardModal: React.FC<CardModalProps> = ({
       <DialogTitle>
         {isEditing
           ? "Редактирование карточки"
-          : card.author || "Автор неизвестен"}
+          : card.author || "Детали карточки"}
       </DialogTitle>
-      <DialogContent>
-        {isEditing ? (
-          <>
-            <TextField
-              label="Автор"
-              fullWidth
-              margin="normal"
-              value={editedCard.author}
-              onChange={(e) =>
-                setEditedCard({ ...editedCard, author: e.target.value })
-              }
-            />
-            <TextField
-              label="Описание"
-              fullWidth
-              margin="normal"
-              multiline
-              value={editedCard.description}
-              onChange={(e) =>
-                setEditedCard({ ...editedCard, description: e.target.value })
-              }
-            />
-            <TextField
-              label="URL изображения"
-              fullWidth
-              margin="normal"
-              value={editedCard.url}
-              onChange={(e) =>
-                setEditedCard({ ...editedCard, url: e.target.value })
-              }
-            />
-          </>
-        ) : (
-          <>
-            <Typography variant="body1">
-              Ширина: {card.width || "N/A"}
-            </Typography>
-            <Typography variant="body1">
-              Высота: {card.height || "N/A"}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {card.description || "Описание отсутствует"}
-            </Typography>
-            <img
-              src={
-                card.downloadUrl ||
-                card.url ||
-                "https://via.placeholder.com/150"
-              }
-              alt={card.author || "No image"}
-              style={{ width: "100%", marginTop: "16px" }}
-            />
-          </>
-        )}
-      </DialogContent>
+      <DialogContent>{renderCardFields()}</DialogContent>
       <DialogActions>
         {!card.id && !isEditing && (
           <Button color="primary" onClick={handleSaveToDatabase}>
