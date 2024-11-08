@@ -6,6 +6,7 @@ import ChartPage from "./pages/ChartPage";
 import TablePage from "./pages/TablePage";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import ExternalCustomApiPage from "./pages/ExternalCustomApiPage";
 
 export const App: React.FC = () => {
 	return (
@@ -13,6 +14,7 @@ export const App: React.FC = () => {
 			<Header />
 			<Routes>
 				<Route path="/" element={<ExternalApiPage />} />
+				<Route path="/external-api" element={<ExternalCustomApiPage />} />
 				<Route path="/database" element={<DatabaseCardsPage />} />
 				<Route path="/chart" element={<ChartPage />} />
 				<Route path="/table" element={<TablePage />} />

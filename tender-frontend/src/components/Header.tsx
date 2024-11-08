@@ -13,6 +13,9 @@ const Header: React.FC = () => {
 					<Button color="inherit" component={Link} to="/">
 						External API
 					</Button>
+					<Button color="inherit" component={Link} to="/external-api">
+						External Custom API
+					</Button>
 					<Button color="inherit" component={Link} to="/database">
 						Database
 					</Button>
