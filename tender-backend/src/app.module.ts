@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ImageModule } from './image/image.module';
 import { DatabaseConfig } from './config/database.config';
+import { ExternalApiModule } from './externalApi/externalApi.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { DatabaseConfig } from './config/database.config';
       useClass: DatabaseConfig,
     }),
     ImageModule,
+    ExternalApiModule,
   ],
 })
 export class AppModule {}
