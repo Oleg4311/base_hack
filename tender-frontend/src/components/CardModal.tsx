@@ -15,7 +15,7 @@ interface CardModalProps {
   onClose: () => void;
   onSaveToDatabase?: (card: ICard) => Promise<ICard>;
   onDelete?: () => void;
-  onUpdate?: (card: ICard) => void;
+  onUpdate?: (card: ICard) => Promise<ICard>;
 }
 
 const CardModal: React.FC<CardModalProps> = ({
@@ -37,8 +37,18 @@ const CardModal: React.FC<CardModalProps> = ({
   };
 
   const handleSaveChanges = async () => {
-    if (onUpdate) {
-      await onUpdate(editedCard); // Убедимся, что onUpdate вызывается с обновленной карточкой
+    if (!editedCard.id && onSaveToDatabase) {
+      // Если у карточки нет id, сначала сохраняем её в БД
+      const savedCard = await onSaveToDatabase(editedCard);
+      setEditedCard(savedCard); // Обновляем состояние с полученным id
+      if (onUpdate) {
+        const updatedCard = await onUpdate(savedCard); // Затем обновляем карточку с id
+        setEditedCard(updatedCard);
+      }
+    } else if (onUpdate) {
+      // Если у карточки уже есть id, сразу выполняем обновление
+      const updatedCard = await onUpdate(editedCard);
+      setEditedCard(updatedCard);
     }
     setIsEditing(false);
   };
@@ -106,23 +116,20 @@ const CardModal: React.FC<CardModalProps> = ({
         )}
       </DialogContent>
       <DialogActions>
-        {!card.id && (
+        {!card.id && !isEditing && (
           <Button color="primary" onClick={handleSaveToDatabase}>
             Сохранить в БД
           </Button>
         )}
-        {card.id && (
-          <>
-            {isEditing ? (
-              <Button color="primary" onClick={handleSaveChanges}>
-                Сохранить изменения
-              </Button>
-            ) : (
-              <Button color="secondary" onClick={() => setIsEditing(true)}>
-                Редактировать
-              </Button>
-            )}
-          </>
+        {!isEditing && (
+          <Button color="secondary" onClick={() => setIsEditing(true)}>
+            Редактировать
+          </Button>
+        )}
+        {isEditing && (
+          <Button color="primary" onClick={handleSaveChanges}>
+            Сохранить изменения
+          </Button>
         )}
         {onDelete && (
           <Button color="error" onClick={onDelete}>
