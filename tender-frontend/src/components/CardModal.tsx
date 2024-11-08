@@ -13,7 +13,7 @@ import { ICard } from "../store/cardsSlice";
 interface CardModalProps {
   card: ICard;
   onClose: () => void;
-  onSaveToDatabase?: (card: ICard) => void;
+  onSaveToDatabase?: (card: ICard) => Promise<ICard>;
   onDelete?: () => void;
   onUpdate?: (card: ICard) => void;
 }
@@ -28,16 +28,17 @@ const CardModal: React.FC<CardModalProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editedCard, setEditedCard] = useState<ICard>({ ...card });
 
-  const handleSaveToDatabase = () => {
+  const handleSaveToDatabase = async () => {
     if (onSaveToDatabase) {
-      onSaveToDatabase(editedCard);
+      const savedCard = await onSaveToDatabase(editedCard);
+      setEditedCard(savedCard);
     }
     onClose();
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async () => {
     if (onUpdate) {
-      onUpdate(editedCard); // Передаем обновленную карточку напрямую
+      await onUpdate(editedCard); // Убедимся, что onUpdate вызывается с обновленной карточкой
     }
     setIsEditing(false);
   };

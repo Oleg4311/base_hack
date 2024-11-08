@@ -1,5 +1,3 @@
-// src/pages/ExternalApiPage.tsx
-
 import React, { useEffect, useState } from "react";
 import {
   Card,
@@ -54,14 +52,19 @@ const ExternalApiPage: React.FC = () => {
     setPage(value);
   };
 
-  const handleSaveToDatabase = (card: ICard) => {
-    if (card.id) {
-      // Если у карточки есть ID, значит, она уже есть в базе и нужно выполнить обновление
-      dispatch(updateCard(card));
+  const handleSaveToDatabase = async (card: ICard): Promise<ICard> => {
+    if (!card.id) {
+      const savedCard = await dispatch(addCard(card)).unwrap();
+      return savedCard;
     } else {
-      // Если ID нет, значит, карточка новая и нужно выполнить добавление
-      dispatch(addCard(card));
+      return handleUpdateCard(card); // Используем handleUpdateCard для обновления карточки
     }
+  };
+
+  const handleUpdateCard = async (card: ICard): Promise<ICard> => {
+    const updatedCard = await dispatch(updateCard(card)).unwrap();
+    setSelectedCard(updatedCard); // Обновляем выбранную карточку после редактирования
+    return updatedCard;
   };
 
   const handleCloseModal = () => setSelectedCard(null);
@@ -125,7 +128,7 @@ const ExternalApiPage: React.FC = () => {
         )}
       </Box>
       <Pagination
-        count={10} // Замените на реальное количество страниц из внешнего API, если доступно
+        count={10}
         page={page}
         onChange={handlePageChange}
         sx={{ mt: 2 }}
@@ -135,6 +138,7 @@ const ExternalApiPage: React.FC = () => {
           card={selectedCard}
           onClose={handleCloseModal}
           onSaveToDatabase={handleSaveToDatabase}
+          onUpdate={handleUpdateCard} // Передаем handleUpdateCard для редактирования карточек из БД
         />
       )}
     </Box>

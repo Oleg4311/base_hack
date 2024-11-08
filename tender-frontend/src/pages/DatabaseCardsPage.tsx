@@ -1,9 +1,7 @@
-// src/pages/DatabaseCardsPage.tsx
-
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../store";
-import { fetchCards, deleteCard, ICard } from "../store/cardsSlice";
+import { fetchCards, deleteCard, updateCard, ICard } from "../store/cardsSlice";
 import {
   Card,
   CardContent,
@@ -34,6 +32,12 @@ const DatabaseCardsPage: React.FC = () => {
   const handleDelete = (id: number) => {
     dispatch(deleteCard(id));
     setSelectedCard(null);
+  };
+
+  const handleUpdateCard = async (card: ICard) => {
+    const updatedCard = await dispatch(updateCard(card)).unwrap();
+    setSelectedCard(updatedCard); // Обновляем выбранную карточку в модальном окне после редактирования
+    return updatedCard;
   };
 
   const handleCloseModal = () => setSelectedCard(null);
@@ -101,7 +105,7 @@ const DatabaseCardsPage: React.FC = () => {
         <CardModal
           card={selectedCard}
           onClose={handleCloseModal}
-          onDelete={() => handleDelete(selectedCard.id!)}
+          onUpdate={handleUpdateCard} // Передаем handleUpdateCard для обновления карточек из БД
         />
       )}
     </Box>
