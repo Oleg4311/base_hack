@@ -20,23 +20,26 @@ const DatabaseCardsPage: React.FC = () => {
 	const dispatch = useDispatch<AppDispatch>();
 	const [selectedCard, setSelectedCard] = useState<ICard | null>(null);
 	const [page, setPage] = useState(1);
+	const itemsPerPage = 10; // Лимит карточек на страницу
 
 	useEffect(() => {
-		dispatch(fetchCards(page));
+		dispatch(fetchCards({ page, limit: itemsPerPage })); // Передаем page и limit
 	}, [dispatch, page]);
 
 	const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
 		setPage(value);
 	};
 
-	const handleDelete = (id: number) => {
-		dispatch(deleteCard(id));
+	const handleDelete = async (id: number) => {
+		await dispatch(deleteCard(id));
+		await dispatch(fetchCards({ page, limit: itemsPerPage })); // Заново загружаем карточки после удаления
 		setSelectedCard(null);
 	};
 
 	const handleUpdateCard = async (card: ICard) => {
 		const updatedCard = await dispatch(updateCard(card)).unwrap();
-		setSelectedCard(updatedCard); // Обновляем выбранную карточку в модальном окне после редактирования
+		setSelectedCard(updatedCard);
+		await dispatch(fetchCards({ page, limit: itemsPerPage })); // Заново загружаем карточки после обновления
 		return updatedCard;
 	};
 
@@ -105,7 +108,7 @@ const DatabaseCardsPage: React.FC = () => {
 				<CardModal
 					card={selectedCard}
 					onClose={handleCloseModal}
-					onUpdate={handleUpdateCard} // Передаем handleUpdateCard для обновления карточек из БД
+					onUpdate={handleUpdateCard}
 				/>
 			)}
 		</Box>
