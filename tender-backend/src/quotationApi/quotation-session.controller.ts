@@ -8,28 +8,40 @@ export class QuotationSessionController {
 	) {}
 
 	@Post("check_title")
-	async checkTitle(@Body() data: any) {
+	async checkTitle(
+		@Body("url") url: string,
+		@Body("fileBuffer") fileBuffer: Buffer,
+		@Body("fileName") fileName: string
+	) {
 		const endpointUrl = "http://127.0.0.1:5300/api/check_title";
 		return await this.quotationSessionService.processAndSendToEndpoint(
-			data,
+			{ url, fileBuffer, fileName },
 			endpointUrl
 		);
 	}
 
 	@Post("check_contract_enforced")
-	async checkContractEnforced(@Body() data: any) {
+	async checkContractEnforced(
+		@Body("url") url: string,
+		@Body("fileBuffer") fileBuffer: Buffer,
+		@Body("fileName") fileName: string
+	) {
 		const endpointUrl = "http://127.0.0.1:5300/api/check_contract_enforced";
 		return await this.quotationSessionService.processAndSendToEndpoint(
-			data,
+			{ url, fileBuffer, fileName },
 			endpointUrl
 		);
 	}
 
 	@Post("check_photo")
-	async checkPhoto(@Body() data: any) {
+	async checkPhoto(
+		@Body("url") url: string,
+		@Body("fileBuffer") fileBuffer: Buffer,
+		@Body("fileName") fileName: string
+	) {
 		const endpointUrl = "http://127.0.0.1:5300/api/check_photo";
 		return await this.quotationSessionService.processAndSendToEndpoint(
-			data,
+			{ url, fileBuffer, fileName },
 			endpointUrl
 		);
 	}
