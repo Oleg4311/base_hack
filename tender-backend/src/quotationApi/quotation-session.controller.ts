@@ -1,5 +1,3 @@
-// quotation-session.controller.ts
-
 import { Controller, Post, Body } from "@nestjs/common";
 import { QuotationSessionService } from "./quotation-session.service";
 
@@ -9,9 +7,30 @@ export class QuotationSessionController {
 		private readonly quotationSessionService: QuotationSessionService
 	) {}
 
-	@Post("check")
-	async checkData(@Body() data: any) {
-		// Вызов сервиса для обработки данных и отправки их на внешние API
-		return await this.quotationSessionService.processAndSendData(data);
+	@Post("check_title")
+	async checkTitle(@Body() data: any) {
+		const endpointUrl = "http://127.0.0.1:5300/api/check_title";
+		return await this.quotationSessionService.processAndSendToEndpoint(
+			data,
+			endpointUrl
+		);
+	}
+
+	@Post("check_contract_enforced")
+	async checkContractEnforced(@Body() data: any) {
+		const endpointUrl = "http://127.0.0.1:5300/api/check_contract_enforced";
+		return await this.quotationSessionService.processAndSendToEndpoint(
+			data,
+			endpointUrl
+		);
+	}
+
+	@Post("check_photo")
+	async checkPhoto(@Body() data: any) {
+		const endpointUrl = "http://127.0.0.1:5300/api/check_photo";
+		return await this.quotationSessionService.processAndSendToEndpoint(
+			data,
+			endpointUrl
+		);
 	}
 }
