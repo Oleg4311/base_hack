@@ -38,23 +38,32 @@ export const parseQuotationSession = async (
 		el => el.textContent?.trim()
 	);
 
-	const [
-		contractConditionElement,
-		contractEnforcedElement,
-		customerElement,
-		lawElement,
-	] = document.querySelectorAll(".eoWxtN > div");
+	const descriptionFields = Object.fromEntries(
+		[...document.querySelectorAll(".eoWxtN")].map(el => [
+			el.firstChild?.textContent ?? "",
+			el.lastChild,
+		])
+	);
+
+	const contractConditionElement =
+		descriptionFields["Условия исполнения контракта"];
+	const customerElement = descriptionFields["Заказчик"];
+	const lawElement =
+		descriptionFields["Заключение происходит в соответствии с законом"];
+	const contractEnforcedElement =
+		descriptionFields["Обеспечение исполнения контракта"];
 
 	const contractCondition =
-		contractConditionElement.lastChild?.textContent?.trim();
+		contractConditionElement?.lastChild?.textContent?.trim();
 
-	const contractEnforced = contractEnforcedElement.textContent?.trim();
+	const contractEnforced = contractEnforcedElement?.textContent?.trim();
 
-	const customerAnchor = customerElement.firstChild as HTMLAnchorElement | null;
+	const customerAnchor =
+		customerElement?.firstChild as HTMLAnchorElement | null;
 	const customerName = customerAnchor?.textContent?.trim();
 	const customerLink = customerAnchor?.href;
 
-	const law = lawElement.lastChild?.textContent?.trim();
+	const law = lawElement?.lastChild?.textContent?.trim();
 
 	const dateElement = document.querySelector(
 		"#auction-view-main-info__dates > div"
@@ -141,18 +150,20 @@ export const parseQuotationSession = async (
 		);
 
 		const properties = Object.fromEntries(
-			propertiesRows.map(el => {
-				const name =
-					el
-						.querySelector(
-							".AuctionViewSpecificationCardStyles__CharacteristicTableName-sc-1bupkfz-6"
-						)
-						?.textContent?.trim() ?? "";
-				const value = el
-					.querySelector(".EllipsedSpan__WordBreakSpan-sc-r2mbuv-0")
-					?.textContent?.trim();
-				return [name, value];
-			})
+			propertiesRows
+				.map(el => {
+					const name =
+						el
+							.querySelector(
+								".AuctionViewSpecificationCardStyles__CharacteristicTableName-sc-1bupkfz-6"
+							)
+							?.textContent?.trim() ?? "";
+					const value = el
+						.querySelector(".EllipsedSpan__WordBreakSpan-sc-r2mbuv-0")
+						?.textContent?.trim();
+					return [name, value];
+				})
+				.filter(([name]) => Boolean(name))
 		);
 
 		return {

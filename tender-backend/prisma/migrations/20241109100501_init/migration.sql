@@ -27,6 +27,10 @@ CREATE TABLE "Specification" (
     "kpg3Title" TEXT,
     "model" TEXT,
     "vendor" TEXT,
+    "deliveryDates" TEXT,
+    "deliveryQuantity" TEXT,
+    "deliveryAddress" TEXT,
+    "deliveryDetails" TEXT,
     "sessionId" INTEGER,
     CONSTRAINT "Specification_sessionId_fkey" FOREIGN KEY ("sessionId") REFERENCES "Session" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );

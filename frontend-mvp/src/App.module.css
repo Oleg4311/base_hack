@@ -1,0 +1,24 @@
+.container {
+	width: min(1200px, 100%);
+	margin: 0 auto;
+	padding: 16px;
+}
+
+.filePicker {
+	position: relative;
+}
+
+.inputFIle::after {
+	position: absolute;
+	inset: 0;
+}
+
+.inputFileLabel {
+	cursor: pointer;
+	transition: transform 0.1s ease-out !important;
+	transform: scale(1);
+}
+
+.inputFileLabel:hover {
+	transform: scale(0.9);
+}
