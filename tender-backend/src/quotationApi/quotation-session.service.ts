@@ -1,5 +1,3 @@
-// quotation-session.service.ts
-
 import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
 import { lastValueFrom } from "rxjs";
@@ -9,42 +7,21 @@ import { parseQuotationSession } from "src/parser/parseQuotationSession";
 export class QuotationSessionService {
 	constructor(private readonly httpService: HttpService) {}
 
-	async processAndSendData(data: any): Promise<any> {
+	// Метод для обработки и отправки данных на указанный эндпоинт
+	async processAndSendToEndpoint(data: any, endpointUrl: string): Promise<any> {
 		try {
-			// 1. Обработка данных с помощью скрипта
+			// Обработка данных скриптом
 			const parsedData = await parseQuotationSession(data);
 
-			// 2. Отправка обработанных данных на внешние API параллельно
-			const [titleResponse, contractResponse, photoResponse] =
-				await Promise.all([
-					lastValueFrom(
-						this.httpService.post("http://127.0.0.1:5300/api/check_title", {
-							title: parsedData.title,
-						})
-					),
-					lastValueFrom(
-						this.httpService.post(
-							"http://127.0.0.1:5300/api/check_contract_enforced",
-							{ contractEnforced: parsedData.contractEnforced }
-						)
-					),
-					lastValueFrom(
-						this.httpService.post("http://127.0.0.1:5300/api/check_photo", {
-							photoUrl: parsedData.specifications[0].image,
-						})
-					),
-				]);
+			// Отправка на указанный эндпоинт API
+			const response = await lastValueFrom(
+				this.httpService.post(endpointUrl, parsedData)
+			);
 
-			// Возвращаем результаты всех проверок
-			return {
-				titleCheck: titleResponse.data,
-				contractCheck: contractResponse.data,
-				photoCheck: photoResponse.data,
-			};
+			return response.data;
 		} catch (error) {
 			throw new HttpException(
-				error?.response?.data ||
-					"Ошибка при обработке данных и отправке на проверку",
+				error?.response?.data || "Ошибка при отправке на внешний API",
 				HttpStatus.BAD_GATEWAY
 			);
 		}
