@@ -30,6 +30,6 @@ export interface QuotationSession {
 	law: string;
 	dateStart: string;
 	dateEnd: string;
-	documents: string[];
+	// documents: string[];
 	specifications: Specification[];
 }

@@ -23,19 +23,23 @@ model Session {
 }
 
 model Specification {
-  id           Int        @id @default(autoincrement())
-  title        String?
-  image        String?
-  quantity     String?
-  pricePerUnit String?
-  totalPrice   String?
-  okpd2Code    String?
-  okpd2Title   String?
-  kpg3Code     String?
-  kpg3Title    String?
-  model        String?
-  vendor       String?
-  properties   Property[]
+  id               Int        @id @default(autoincrement())
+  title            String?
+  image            String?
+  quantity         String?
+  pricePerUnit     String?
+  totalPrice       String?
+  okpd2Code        String?
+  okpd2Title       String?
+  kpg3Code         String?
+  kpg3Title        String?
+  model            String?
+  vendor           String?
+  properties       Property[]
+  deliveryDates    String?
+  deliveryQuantity String?
+  deliveryAddress  String?
+  deliveryDetails  String?
 
   Session   Session? @relation(fields: [sessionId], references: [id])
   sessionId Int?

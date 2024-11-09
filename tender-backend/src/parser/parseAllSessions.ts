@@ -58,23 +58,25 @@ const prisma = new PrismaClient();
 			);
 
 			const end = performance.now();
-			totalTime = end - start;
+			totalTime += end - start;
 
+			console.log(`Линка ${i + 1} из ${links.length}...`);
+			console.log(`Общее время: ${Math.round(totalTime / 1000)} с.`);
 			console.log(
-				`Линка ${i + 1} из ${links.length}...\nОбщее время: ${Math.round(totalTime / 1000 / 60)} мин.\nСреднее время выполнения: ${Math.round(totalTime / i + 1)} мс.\n`
+				`Среднее время выполнения: ${Math.round(totalTime / (i + 1))} мс.\n`
 			);
 
 			await prisma.session.create({
 				data: {
 					...session,
 					specifications: {
-						create: session.specifications.map(s => ({
+						create: session.specifications?.map(s => ({
 							...s,
 							properties: {
 								createMany: {
-									data: {
-										...s.properties,
-									},
+									data: Object.entries(s?.properties ?? {}).map(
+										([name, value]) => ({ name, value })
+									),
 								},
 							},
 						})),
@@ -84,13 +86,14 @@ const prisma = new PrismaClient();
 
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (err) {
+			if (err instanceof Error) {
+				console.error(err.message);
+			}
 			continue;
 		}
 	}
 
-	console.log(
-		`\nГотово. Общее время: ${Math.round(totalTime / 1000 / 60)} мин.`
-	);
+	console.log(`\nГотово. Общее время: ${Math.round(totalTime / 1000)} с.`);
 	console.log(
 		`Среднее время выполнения: ${Math.round(totalTime / links.length)} мс.`
 	);

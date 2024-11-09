@@ -65,9 +65,9 @@ export const parseQuotationSession = async (
 	);
 	const [, dateStart, timeStart, , dateEnd, timeEnd] = date?.split(" ") ?? [];
 
-	const documents = [
-		...document.querySelectorAll(".eoWxtN > div > div > div > a"),
-	].map(el => (el as HTMLAnchorElement).href);
+	// const documents = [
+	// 	...document.querySelectorAll(".eoWxtN > div > div > div > a"),
+	// ].map(el => (el as HTMLAnchorElement).href);
 
 	const specifications = [
 		...document.querySelectorAll(
@@ -186,7 +186,7 @@ export const parseQuotationSession = async (
 		law,
 		dateStart: new Date(`${toIsoDate(dateStart)}T${timeStart}`).toISOString(),
 		dateEnd: new Date(`${toIsoDate(dateEnd)}T${timeEnd}`).toISOString(),
-		documents,
+		// documents,
 		specifications,
 	};
 
