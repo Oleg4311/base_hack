@@ -17,7 +17,7 @@ export class QuotationSessionService {
 			const parsedData = await parseQuotationSession(data.url);
 
 			const requestData = {
-				parsedData,
+				...parsedData,
 				file: data.file,
 			};
 
