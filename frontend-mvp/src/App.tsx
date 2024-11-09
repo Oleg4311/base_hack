@@ -6,24 +6,57 @@ import {
 	useState,
 } from "react";
 import styles from "./App.module.css";
-import { Label, TextInput, Text, Icon, Button } from "@gravity-ui/uikit";
+import {
+	Label,
+	TextInput,
+	Text,
+	Icon,
+	Button,
+	Card,
+	Flex,
+} from "@gravity-ui/uikit";
 import axios from "axios";
-import { Xmark } from "@gravity-ui/icons";
+import { Check, Xmark } from "@gravity-ui/icons";
 
-const endpoints = [
-	"/quotation-sessions/check_title",
-	"/quotation-sessions/check_contract_enforced",
-	"/quotation-sessions/check_photo",
+const criteria = [
+	{
+		name: "1. Проверка наименования",
+		endpoint: "/quotation-sessions/check_title",
+	},
+	{
+		name: '2. Проверка поля "обеспечение исполнения контракта"',
+		endpoint: "/quotation-sessions/check_contract_enforced",
+	},
+	// { name: "3. Проверка наличия сертификатов/лицензий" },
+	// { name: "4. Проверка графика поставки и этапа поставки" },
+	{
+		name: "5. Проверка внешнего вида товаров",
+		endpoint: "/quotation-sessions/check_photo",
+	},
+	// { name: "6. Проверка начального и максимального значения цены контракта" },
+	// {
+	// 	name: "7. Проверка наименования и значения характеристики спецификации закупки.",
+	// },
+	// { name: "8. Проверка количества товаров спецификации закупки." },
+	// { name: "9. Проверка количества характеристик." },
 ];
-
-const urls = endpoints.map(
-	endpoint => `${import.meta.env.VITE_API_URL}${endpoint}`
-);
 
 export const App: React.FC = () => {
 	const [url, setUrl] = useState("");
 	const [file, setFile] = useState<File | null>(null);
 	const inputFileRef = useRef<HTMLInputElement | null>(null);
+	const [responses, setResponses] = useState<Record<string, boolean | null>>({
+		"1. Проверка наименования": null,
+		'2. Проверка поля "обеспечение исполнения контракта"': null,
+		// "3. Проверка наличия сертификатов/лицензий": null,
+		// "4. Проверка графика поставки и этапа поставки": null,
+		"5. Проверка внешнего вида товаров": null,
+		// "6. Проверка начального и максимального значения цены контракта": null,
+		// "7. Проверка наименования и значения характеристики спецификации закупки.":
+		// 	null,
+		// "8. Проверка количества товаров спецификации закупки.": null,
+		// "9. Проверка количества характеристик.": null,
+	});
 
 	const fileChangeHandler = useCallback<ChangeEventHandler<HTMLInputElement>>(
 		event => {
@@ -37,15 +70,32 @@ export const App: React.FC = () => {
 		async event => {
 			event.preventDefault();
 
-			const formData = new FormData();
+			const form = event.target as HTMLFormElement;
+
+			const formData = new FormData(form);
 			formData.set("url", url);
 			if (file) {
 				formData.set("file", file);
 			}
 
-			const requests = urls.map(u => axios.post(u, formData));
+			const criteriaData = formData.getAll("criteria") as string[];
 
-			await Promise.all([requests]);
+			criteriaData.map(async name => {
+				const endpoint = criteria.find(c => c.name === name)?.endpoint;
+
+				if (endpoint) {
+					try {
+						await axios.post<[percent: number, status: string]>(
+							`${import.meta.env.VITE_API_URL}${endpoint}`,
+							formData
+						);
+						setResponses(prev => ({ ...prev, [name]: true }));
+						// eslint-disable-next-line @typescript-eslint/no-unused-vars
+					} catch (err) {
+						setResponses(prev => ({ ...prev, [name]: false }));
+					}
+				}
+			});
 		},
 		[file, url]
 	);
@@ -68,7 +118,11 @@ export const App: React.FC = () => {
 					label="URL-адрес котировочной сессии"
 				/>
 				<div className={styles.fileField}>
-					<Text ellipsis>{file?.name}</Text>
+					{file && (
+						<Button onClick={removeFile}>
+							<Icon data={Xmark} />
+						</Button>
+					)}
 					<label htmlFor="inputFile" className={styles.filePicker}>
 						<input
 							ref={inputFileRef}
@@ -83,17 +137,39 @@ export const App: React.FC = () => {
 								Загрузить файл
 							</Label>
 						)}
+						<Text ellipsis>{file?.name}</Text>
 					</label>
-					{file && (
-						<Button onClick={removeFile}>
-							<Icon data={Xmark} />
-						</Button>
-					)}
 				</div>
-				<Button type="submit" view="action">
+				<Card className={styles.checkboxes}>
+					{criteria.map(({ name }) => (
+						<Flex gap={2} key={name}>
+							<input id={name} type="checkbox" name="criteria" value={name} />
+							<label htmlFor={name}>{name}</label>
+						</Flex>
+					))}
+				</Card>
+
+				<Button type="submit" view="action" size="l">
 					Проверить
 				</Button>
 			</form>
+			<div className={styles.checks}>
+				{Object.entries(responses).map(([name, status]) => (
+					<Card className={styles.check} key={name}>
+						<div className={styles.checkStatus}>
+							{status === true ? (
+								<Icon data={Check} stroke="green" />
+							) : status === false ? (
+								<Icon data={Xmark} stroke="red" />
+							) : null}
+						</div>
+						<Flex justifyContent="space-between">
+							<div className={styles.checkName}>{name}</div>
+							{/* {status?.[0] && <Label>{status[0]}</Label>} */}
+						</Flex>
+					</Card>
+				))}
+			</div>
 		</div>
 	);
 };
