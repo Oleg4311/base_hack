@@ -12,8 +12,8 @@ import { Xmark } from "@gravity-ui/icons";
 
 const endpoints = [
 	"/quotation-sessions/check_title",
-	// "/quotation-sessions/check_contract_enforced",
-	// "/quotation-sessions/check_photo",
+	"/quotation-sessions/check_contract_enforced",
+	"/quotation-sessions/check_photo",
 ];
 
 const urls = endpoints.map(

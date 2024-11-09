@@ -32,7 +32,7 @@ const initialState: ApiState = {
 // });
 
 export const fetchApiData = createAsyncThunk("api/fetchApiData", async () => {
-	const response = await axios.get("http://10.10.116.232:5300/api/"); // Полный URL для проверки
+	const response = await axios.get("http://127.0.0.1:5300/api/"); // Полный URL для проверки
 	return response.data;
 });
 

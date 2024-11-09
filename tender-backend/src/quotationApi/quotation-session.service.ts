@@ -9,7 +9,6 @@ export class QuotationSessionService {
 
 	// Метод для обработки URL и отправки данных и бинарного файла на указанный эндпоинт
 	async processAndSendToEndpoint(
-
 		data: { url: string; file: any },
 
 		endpointUrl: string
@@ -18,8 +17,10 @@ export class QuotationSessionService {
 			// Обработка URL через скрипт parseQuotationSession
 			const parsedData = await parseQuotationSession(data.url);
 
+			console.log(parsedData.title);
+
 			const requestData = {
-				parsedData,
+				...parsedData,
 				file: data.file,
 			};
 

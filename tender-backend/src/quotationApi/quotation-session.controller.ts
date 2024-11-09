@@ -17,7 +17,7 @@ export class QuotationSessionController {
 	@Post("check_title")
 	@UseInterceptors(FileInterceptor("file"))
 	async checkTitle(@UploadedFile() file, @Body("url") url: string) {
-		const endpointUrl = "http://10.10.116.232:5300/api/check_title";
+		const endpointUrl = "http://127.0.0.1:5300/api/check_title";
 		return await this.quotationSessionService.processAndSendToEndpoint(
 			{ url, file },
 			endpointUrl
@@ -27,7 +27,7 @@ export class QuotationSessionController {
 	@Post("check_contract_enforced")
 	@UseInterceptors(FileInterceptor("file"))
 	async checkContractEnforced(@UploadedFile() file, @Body("url") url: string) {
-		const endpointUrl = "http://10.10.116.232:5300/api/check_contract_enforced";
+		const endpointUrl = "http://127.0.0.1:5300/api/check_contract_enforced";
 		return await this.quotationSessionService.processAndSendToEndpoint(
 			{ url, file },
 			endpointUrl
@@ -37,7 +37,7 @@ export class QuotationSessionController {
 	@Post("check_photo")
 	@UseInterceptors(FileInterceptor("file"))
 	async checkPhoto(@UploadedFile() file, @Body("url") url: string) {
-		const endpointUrl = "http://10.10.116.232:5300/api/check_photo";
+		const endpointUrl = "http://127.0.0.1:5300/api/check_photo";
 		return await this.quotationSessionService.processAndSendToEndpoint(
 			{ url, file },
 			endpointUrl
