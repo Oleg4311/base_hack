@@ -1,5 +1,12 @@
-import { Controller, Post, Body } from "@nestjs/common";
+import {
+	Controller,
+	Post,
+	Body,
+	UploadedFile,
+	UseInterceptors,
+} from "@nestjs/common";
 import { QuotationSessionService } from "./quotation-session.service";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 @Controller("quotation-sessions")
 export class QuotationSessionController {
@@ -8,40 +15,31 @@ export class QuotationSessionController {
 	) {}
 
 	@Post("check_title")
-	async checkTitle(
-		@Body("url") url: string,
-		@Body("fileBuffer") fileBuffer: Buffer,
-		@Body("fileName") fileName: string
-	) {
-		const endpointUrl = "http://127.0.0.1:5300/api/check_title";
+	@UseInterceptors(FileInterceptor("file"))
+	async checkTitle(@UploadedFile() file, @Body("url") url: string) {
+		const endpointUrl = "http://10.10.116.232:5300/api/check_title";
 		return await this.quotationSessionService.processAndSendToEndpoint(
-			{ url, fileBuffer, fileName },
+			{ url, file },
 			endpointUrl
 		);
 	}
 
 	@Post("check_contract_enforced")
-	async checkContractEnforced(
-		@Body("url") url: string,
-		@Body("fileBuffer") fileBuffer: Buffer,
-		@Body("fileName") fileName: string
-	) {
-		const endpointUrl = "http://127.0.0.1:5300/api/check_contract_enforced";
+	@UseInterceptors(FileInterceptor("file"))
+	async checkContractEnforced(@UploadedFile() file, @Body("url") url: string) {
+		const endpointUrl = "http://10.10.116.232:5300/api/check_contract_enforced";
 		return await this.quotationSessionService.processAndSendToEndpoint(
-			{ url, fileBuffer, fileName },
+			{ url, file },
 			endpointUrl
 		);
 	}
 
 	@Post("check_photo")
-	async checkPhoto(
-		@Body("url") url: string,
-		@Body("fileBuffer") fileBuffer: Buffer,
-		@Body("fileName") fileName: string
-	) {
-		const endpointUrl = "http://127.0.0.1:5300/api/check_photo";
+	@UseInterceptors(FileInterceptor("file"))
+	async checkPhoto(@UploadedFile() file, @Body("url") url: string) {
+		const endpointUrl = "http://10.10.116.232:5300/api/check_photo";
 		return await this.quotationSessionService.processAndSendToEndpoint(
-			{ url, fileBuffer, fileName },
+			{ url, file },
 			endpointUrl
 		);
 	}

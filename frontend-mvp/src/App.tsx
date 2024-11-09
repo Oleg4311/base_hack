@@ -2,16 +2,18 @@ import {
 	ChangeEventHandler,
 	FormEventHandler,
 	useCallback,
+	useRef,
 	useState,
 } from "react";
 import styles from "./App.module.css";
-import { Label, TextInput } from "@gravity-ui/uikit";
+import { Label, TextInput, Text, Icon, Button } from "@gravity-ui/uikit";
 import axios from "axios";
+import { Xmark } from "@gravity-ui/icons";
 
 const endpoints = [
 	"/quotation-sessions/check_title",
-	"/quotation-sessions/check_contract_enforced",
-	"/quotation-sessions/check_photo",
+	// "/quotation-sessions/check_contract_enforced",
+	// "/quotation-sessions/check_photo",
 ];
 
 const urls = endpoints.map(
@@ -21,6 +23,7 @@ const urls = endpoints.map(
 export const App: React.FC = () => {
 	const [url, setUrl] = useState("");
 	const [file, setFile] = useState<File | null>(null);
+	const inputFileRef = useRef<HTMLInputElement | null>(null);
 
 	const fileChangeHandler = useCallback<ChangeEventHandler<HTMLInputElement>>(
 		event => {
@@ -34,12 +37,27 @@ export const App: React.FC = () => {
 		async event => {
 			event.preventDefault();
 
-			const requests = urls.map(u => axios.get(u, { params: { link: url } }));
+			const formData = new FormData();
+			formData.set("url", url);
+			if (file) {
+				formData.set("file", file);
+			}
+
+			const requests = urls.map(u => axios.post(u, formData));
 
 			await Promise.all([requests]);
 		},
-		[url]
+		[file, url]
 	);
+
+	const removeFile = useCallback(() => {
+		if (!inputFileRef.current) {
+			return;
+		}
+		setFile(null);
+		inputFileRef.current.files = null;
+		inputFileRef.current.value = "";
+	}, []);
 
 	return (
 		<div className={styles.container}>
@@ -49,18 +67,32 @@ export const App: React.FC = () => {
 					onUpdate={value => setUrl(value)}
 					label="URL-адрес котировочной сессии"
 				/>
-				<label htmlFor="inputFile" className={styles.filePicker}>
-					<input
-						id="inputFile"
-						type="file"
-						accept=".doc,.docx"
-						hidden
-						onChange={fileChangeHandler}
-					/>
-					<Label className={styles.inputFileLabel} size="m">
-						Загрузить файл
-					</Label>
-				</label>
+				<div className={styles.fileField}>
+					<Text ellipsis>{file?.name}</Text>
+					<label htmlFor="inputFile" className={styles.filePicker}>
+						<input
+							ref={inputFileRef}
+							id="inputFile"
+							type="file"
+							accept=".doc,.docx"
+							hidden
+							onChange={fileChangeHandler}
+						/>
+						{!file && (
+							<Label className={styles.inputFileLabel} size="m">
+								Загрузить файл
+							</Label>
+						)}
+					</label>
+					{file && (
+						<Button onClick={removeFile}>
+							<Icon data={Xmark} />
+						</Button>
+					)}
+				</div>
+				<Button type="submit" view="action">
+					Проверить
+				</Button>
 			</form>
 		</div>
 	);

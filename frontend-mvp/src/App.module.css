@@ -28,3 +28,9 @@
 	flex-direction: column;
 	gap: 8px;
 }
+
+.fileField {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
