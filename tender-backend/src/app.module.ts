@@ -4,6 +4,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ImageModule } from "./image/image.module";
 import { DatabaseConfig } from "./config/database.config";
 import { ExternalApiModule } from "./externalApi/externalApi.module";
+import { QuotationModule } from "./quotationApi/quotationApi.module";
+import { QuotationSessionModule } from "./quotationApi/quotation-session.module";
 
 @Module({
 	imports: [
@@ -17,6 +19,8 @@ import { ExternalApiModule } from "./externalApi/externalApi.module";
 		}),
 		ImageModule,
 		ExternalApiModule,
+		QuotationModule,
+		QuotationSessionModule,
 	],
 })
 export class AppModule {}
