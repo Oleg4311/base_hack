@@ -9,7 +9,9 @@ export class QuotationSessionService {
 
 	// Метод для обработки URL и отправки данных и бинарного файла на указанный эндпоинт
 	async processAndSendToEndpoint(
+
 		data: { url: string; file: any },
+
 		endpointUrl: string
 	): Promise<any> {
 		try {
@@ -28,7 +30,6 @@ export class QuotationSessionService {
 
 			return response.data;
 		} catch (error) {
-			console.log(error);
 			throw new HttpException(
 				error?.response?.data || "Ошибка при отправке на внешний API",
 				HttpStatus.BAD_GATEWAY

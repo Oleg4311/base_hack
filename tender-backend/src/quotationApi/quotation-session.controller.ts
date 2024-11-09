@@ -20,7 +20,6 @@ export class QuotationSessionController {
 		const endpointUrl = "http://10.10.116.232:5300/api/check_title";
 		return await this.quotationSessionService.processAndSendToEndpoint(
 			{ url, file },
-			endpointUrl
 		);
 	}
 
@@ -30,7 +29,6 @@ export class QuotationSessionController {
 		const endpointUrl = "http://10.10.116.232:5300/api/check_contract_enforced";
 		return await this.quotationSessionService.processAndSendToEndpoint(
 			{ url, file },
-			endpointUrl
 		);
 	}
 
@@ -40,7 +38,6 @@ export class QuotationSessionController {
 		const endpointUrl = "http://10.10.116.232:5300/api/check_photo";
 		return await this.quotationSessionService.processAndSendToEndpoint(
 			{ url, file },
-			endpointUrl
 		);
 	}
 }
