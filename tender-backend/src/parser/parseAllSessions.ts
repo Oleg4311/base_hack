@@ -60,10 +60,10 @@ const prisma = new PrismaClient();
 			const end = performance.now();
 			totalTime += end - start;
 
-			console.log(`Линка ${i + 1} из ${links.length}...`);
+			console.log(`\nЛинка ${i + 1} из ${links.length}...`);
 			console.log(`Общее время: ${Math.round(totalTime / 1000)} с.`);
 			console.log(
-				`Среднее время выполнения: ${Math.round(totalTime / (i + 1))} мс.\n`
+				`Среднее время выполнения: ${Math.round(totalTime / (i + 1))} мс.`
 			);
 
 			await prisma.session.create({
@@ -97,4 +97,12 @@ const prisma = new PrismaClient();
 	console.log(
 		`Среднее время выполнения: ${Math.round(totalTime / links.length)} мс.`
 	);
-})();
+})()
+	.then(async () => {
+		await prisma.$disconnect();
+	})
+	.catch(async e => {
+		console.error(e);
+		await prisma.$disconnect();
+		process.exit(1);
+	});
