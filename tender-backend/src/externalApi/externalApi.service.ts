@@ -1,23 +1,23 @@
-import { HttpService } from '@nestjs/axios';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { lastValueFrom } from 'rxjs';
+import { HttpService } from "@nestjs/axios";
+import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
+import { lastValueFrom } from "rxjs";
 
 @Injectable()
 export class ExternalApiService {
-  constructor(private readonly httpService: HttpService) {}
+	constructor(private readonly httpService: HttpService) {}
 
-  async fetchExternalData(): Promise<any> {
-    try {
-      const response = await lastValueFrom(
-        this.httpService.get('http://127.0.0.1:5300/api/'),
-      );
-      return response.data;
-    } catch (error) {
-      // Обработка ошибки без циклических структур
-      throw new HttpException(
-        error?.response?.data || 'Ошибка при запросе внешнего API',
-        HttpStatus.BAD_GATEWAY,
-      );
-    }
-  }
+	async fetchExternalData(): Promise<any> {
+		try {
+			const response = await lastValueFrom(
+				this.httpService.get("http://127.0.0.1:5300/api/")
+			);
+			return response.data;
+		} catch (error) {
+			// Обработка ошибки без циклических структур
+			throw new HttpException(
+				error?.response?.data || "Ошибка при запросе внешнего API",
+				HttpStatus.BAD_GATEWAY
+			);
+		}
+	}
 }
