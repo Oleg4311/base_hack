@@ -1,8 +1,5 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { ImageModule } from "./image/image.module";
-import { DatabaseConfig } from "./config/database.config";
 import { ExternalApiModule } from "./externalApi/externalApi.module";
 import { QuotationSessionModule } from "./quotationApi/quotation-session.module";
 
@@ -12,11 +9,10 @@ import { QuotationSessionModule } from "./quotationApi/quotation-session.module"
 			isGlobal: true,
 			envFilePath: ".env", // Подключение файла .env
 		}),
-		TypeOrmModule.forRootAsync({
-			imports: [ConfigModule],
-			useClass: DatabaseConfig,
-		}),
-		ImageModule,
+		// TypeOrmModule.forRootAsync({
+		// 	imports: [ConfigModule],
+		// 	useClass: DatabaseConfig,
+		// }),
 		ExternalApiModule,
 		QuotationSessionModule,
 	],

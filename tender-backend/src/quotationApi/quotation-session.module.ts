@@ -1,13 +1,11 @@
+// quotation-session.module.ts
+
 import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { QuotationSession } from "./quotation-session.entity";
-import { QuotationSessionService } from "./quotation-session.service";
-import { QuotationSessionController } from "./quotation-session.controller";
 import { HttpModule } from "@nestjs/axios";
+import { QuotationSessionController } from "./quotation-session.controller";
 
 @Module({
-	imports: [TypeOrmModule.forFeature([QuotationSession]), HttpModule],
-	providers: [QuotationSessionService],
+	imports: [HttpModule],
 	controllers: [QuotationSessionController],
 })
 export class QuotationSessionModule {}

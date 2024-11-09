@@ -1,3 +1,5 @@
+// quotation-session.controller.ts
+
 import {
 	Controller,
 	Post,
@@ -5,52 +7,60 @@ import {
 	HttpException,
 	HttpStatus,
 } from "@nestjs/common";
-import { QuotationSessionService } from "./quotation-session.service";
 import { HttpService } from "@nestjs/axios";
 import { lastValueFrom } from "rxjs";
 
 @Controller("quotation-sessions")
 export class QuotationSessionController {
-	constructor(
-		private readonly quotationSessionService: QuotationSessionService,
-		private readonly httpService: HttpService
-	) {}
+	constructor(private readonly httpService: HttpService) {}
 
-	@Post("check")
-	async checkData(@Body() data: any) {
-		// Сохранение данных в базе
-		await this.quotationSessionService.create(data);
-
-		// Отправка данных на внешние API
+	@Post("check_title")
+	async checkTitle(@Body() data: { title: string }) {
 		try {
-			const titleResponse = await lastValueFrom(
+			const response = await lastValueFrom(
 				this.httpService.post("http://127.0.0.1:5300/api/check_title", {
 					title: data.title,
 				})
 			);
+			return response.data;
+		} catch (error) {
+			throw new HttpException(
+				error?.response?.data || "Ошибка при проверке наименования",
+				HttpStatus.BAD_GATEWAY
+			);
+		}
+	}
 
-			const contractResponse = await lastValueFrom(
+	@Post("check_contract_enforced")
+	async checkContractEnforced(@Body() data: { contractEnforced: string }) {
+		try {
+			const response = await lastValueFrom(
 				this.httpService.post(
 					"http://127.0.0.1:5300/api/check_contract_enforced",
 					{ contractEnforced: data.contractEnforced }
 				)
 			);
-
-			const photoResponse = await lastValueFrom(
-				this.httpService.post("http://127.0.0.1:5300/api/check_photo", {
-					photoUrl: data.specifications[0].image,
-				})
-			);
-
-			// Формирование и отправка ответа с результатами проверок на фронт
-			return {
-				titleCheck: titleResponse.data,
-				contractCheck: contractResponse.data,
-				photoCheck: photoResponse.data,
-			};
+			return response.data;
 		} catch (error) {
 			throw new HttpException(
-				error?.response?.data || "Ошибка при проверке данных",
+				error?.response?.data || "Ошибка при проверке обеспечения контракта",
+				HttpStatus.BAD_GATEWAY
+			);
+		}
+	}
+
+	@Post("check_photo")
+	async checkPhoto(@Body() data: { photoUrl: string }) {
+		try {
+			const response = await lastValueFrom(
+				this.httpService.post("http://127.0.0.1:5300/api/check_photo", {
+					photoUrl: data.photoUrl,
+				})
+			);
+			return response.data;
+		} catch (error) {
+			throw new HttpException(
+				error?.response?.data || "Ошибка при проверке фото",
 				HttpStatus.BAD_GATEWAY
 			);
 		}
